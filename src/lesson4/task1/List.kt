@@ -409,7 +409,7 @@ fun russian(n: Int): String {
             x == 0 -> list = list
             count == 5 -> {
                 list.add(numbers[26 + x])
-                if (number / 100 % 100 == 0) {
+                if (number / 1000 % 100 == 0) {
                     list.add(numbers[40])
                 }
             }
@@ -422,7 +422,7 @@ fun russian(n: Int): String {
 
             count == 4 && x != 1 -> {
                 list.add(numbers[17 + x])
-                if (number / 10 % 10 == 0) {
+                if (number / 1000 % 10 == 0) {
                     list.add(numbers[40])
                 }
             }
