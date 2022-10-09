@@ -67,6 +67,7 @@ fun circleInside(
     x2: Double, y2: Double, r2: Double
 ): Boolean {
     return if (x2 == x1 && y2 == y1 && r2 < r1) false
+    else if (r1 > r2) false
     else if (sqr(r2 - r1) >= sqr(x2 - x1) + sqr(y2 - y1)) true
     else false
 }

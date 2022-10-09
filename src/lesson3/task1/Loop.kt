@@ -80,7 +80,7 @@ fun digitNumber(n: Int): Int {
     do {
         number /= 10
         count++
-    } while (number > 0)
+    } while (number != 0)
     return count
 }
 
@@ -90,8 +90,8 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = if (n <= 2) 1 else fib(n - 2) + fib(n - 1)
-
+fun fib(n: Int): Int = ((Math.pow(((1.0 + sqrt(5.0))/2.0), n.toDouble())
+        - Math.pow(((1.0 - sqrt(5.0))/2.0), n.toDouble())) / sqrt(5.0)).toInt()
 /**
  * Простая (2 балла)
  *
@@ -147,12 +147,13 @@ fun collatzSteps(x: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var k = 2
+    if (n == m) return n
+    else {
+        var k = 2
     while (k < Int.MAX_VALUE) {
         if (k % n == 0 && k % m == 0) break
-        else k++
-    }
-    return k
+        else k++ }
+    return k }
 }
 
 /**
@@ -163,14 +164,18 @@ fun lcm(m: Int, n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    var k = 2
-    while (max(m, n) > k) {
-        if (m % k == 0 && n % k == 0) {
-            break
-        } else k++
+    if ((m == 1 && n == 1) || (n == 0 && m == 0)) return true
+    else {
+        var k = 2
+        while (max(m, n) > k) {
+            if (m % k == 0 && n % k == 0) {
+                break
+            } else k++
+        }
+        return (max(m, n) == k)
     }
-    return (max(m, n) == k)
 }
+
 
 /**
  * Средняя (3 балла)
@@ -289,7 +294,7 @@ fun squareSequenceDigit(n: Int): Int {
         x += 1
     }
     return if (count == n) num % 10
-    else num / Math.pow(10.0, (count - n).toDouble()).toInt() % Math.pow(10.0, (count - n).toDouble()).toInt()
+    else num / Math.pow(10.0, (count - n).toDouble()).toInt() % 10
 }
 
 
@@ -312,5 +317,5 @@ fun fibSequenceDigit(n: Int): Int {
         x += 1
     }
     return if (count == n) num % 10
-    else num / Math.pow(10.0, (count - n).toDouble()).toInt() % Math.pow(10.0, (count - n).toDouble()).toInt()
+    else num / Math.pow(10.0, (count - n).toDouble()).toInt() % 10
 }
