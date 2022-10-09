@@ -91,10 +91,13 @@ fun timeForHalfWay(
 ): Double {
     val allway = t1 * v1 + t2 * v2 + t3 * v3
     val halfway = allway / 2.0
-    return if (t1 * v1 >= halfway) (halfway / v1)
-    else if (t1 * v1 < halfway && t1 * v1 + t2 * v2 >= halfway) ((halfway - t1 * v1) / v2 + t1)
-    else (halfway - t1 * v1 - t2 * v2) / v3 + t1 + t2
+    when {
+        (t1 * v1 >= halfway) -> return (halfway / v1)
+        (t1 * v1 < halfway && t1 * v1 + t2 * v2 >= halfway) -> return ((halfway - t1 * v1) / v2 + t1)
+        else -> return (halfway - t1 * v1 - t2 * v2) / v3 + t1 + t2
+    }
 }
+
 
 /**
  * Простая (2 балла)
@@ -109,11 +112,11 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int {
-    return if (rookX1 != kingX && rookX2 != kingX && rookY1 != kingY && rookY2 != kingY) 0
-    else if (((rookX2 == kingX || rookY2 == kingY) && rookX1 != kingX && rookY1 != kingY)) 2
-    else if (((rookX1 == kingX || rookY1 == kingY) && rookX2 != kingX && rookY2 != kingY)) 1
-    else 3
+): Int = when {
+    (rookX1 != kingX && rookX2 != kingX && rookY1 != kingY && rookY2 != kingY) -> 0
+    (((rookX2 == kingX || rookY2 == kingY) && rookX1 != kingX && rookY1 != kingY)) -> 2
+    (((rookX1 == kingX || rookY1 == kingY) && rookX2 != kingX && rookY2 != kingY)) -> 1
+    else -> 3
 }
 
 /**
@@ -146,8 +149,8 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val maximum = max(max(a, b), c)
-    val minimal = min(min(a, b), c)
+    val maximum = maxOf(a, b, c)
+    val minimal = minOf(a, b, c)
     return if ((a + b < c) || (a + c < b) || (b + c < a)) -1
     else if (sqr(maximum) == sqr(a + b + c - maximum - minimal) + sqr(minimal)) 1
     else if (sqr(maximum) > sqr(a + b + c - maximum - minimal) + sqr(minimal)) 2

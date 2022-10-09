@@ -31,8 +31,7 @@ fun isNumberHappy(number: Int): Boolean = (number / 1000 + number / 100 % 10) ==
  * Считать, что ферзи не могут загораживать друг друга.
  */
 fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int):
-        Boolean =(x1 == x2 && y1 != y2) || (x1 != x2 && y1 == y2) || (sqr(y2 - y1) == sqr(x2 - x1))
-
+        Boolean = (x1 == x2 && y1 != y2) || (x1 != x2 && y1 == y2) || (sqr(y2 - y1) == sqr(x2 - x1))
 
 
 /**
@@ -67,10 +66,11 @@ fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
 ): Boolean {
-    return if (x2==x1 && y2==y1 && r2<r1) false
-    else if (sqr(r2-r1) >= sqr(x2-x1) + sqr(y2-y1)) true
+    return if (x2 == x1 && y2 == y1 && r2 < r1) false
+    else if (sqr(r2 - r1) >= sqr(x2 - x1) + sqr(y2 - y1)) true
     else false
 }
+
 /**
  * Средняя (3 балла)
  *
