@@ -2,7 +2,6 @@
 
 package lesson3.task1
 
-import kotlinx.html.MATH
 import lesson1.task1.sqr
 import kotlin.math.*
 
@@ -90,8 +89,9 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = ((Math.pow(((1.0 + sqrt(5.0))/2.0), n.toDouble())
-        - Math.pow(((1.0 - sqrt(5.0))/2.0), n.toDouble())) / sqrt(5.0)).toInt()
+fun fib(n: Int): Int = ((Math.pow((1.0 + sqrt(5.0)) / 2.0, n.toDouble())
+        - Math.pow((1.0 - sqrt(5.0)) / 2.0, n.toDouble())) / sqrt(5.0)).toInt()
+
 /**
  * Простая (2 балла)
  *
@@ -99,9 +99,12 @@ fun fib(n: Int): Int = ((Math.pow(((1.0 + sqrt(5.0))/2.0), n.toDouble())
  */
 fun minDivisor(n: Int): Int {
     var number = 2
-    while (number < n) {
-        if (n % number == 0) break
-        else number++
+    if (isPrime(n)) return n
+    else {
+        while (number < sqrt(n.toDouble()).toInt() + 1) {
+            if (n % number == 0) break
+            else number++
+        }
     }
     return number
 }
@@ -141,24 +144,27 @@ fun collatzSteps(x: Int): Int {
 }
 
 /**
+ * Наибольший общий делитель
+ */
+fun gcd(m: Int, n: Int): Int {
+    var m1 = m
+    var n1 = n
+    while (min(m1, n1) < max(m1, n1)) {
+        if (max(m1, n1) % min(m1, n1) == 0) {
+            break
+        } else if (max(m1, n1) == m1) m1 = max(m1, n1) % min(m1, n1)
+        else n1 = max(m1, n1) % min(m1, n1)
+    }
+    return min(m1, n1)
+}
+
+/**
  * Средняя (3 балла)
  *
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    fun gcd(m:Int, n: Int): Int {
-        var m1 = m
-        var n1 = n
-        while (min(m1, n1) < max(m1, n1)) {
-            if (max(m1, n1) % min(m1, n1) == 0) {
-                break
-            }
-            else if (max(m1, n1) == m1)  m1 = max(m1, n1) % min(m1, n1)
-            else n1 = max(m1, n1) % min(m1, n1)
-        }
-        return min(m1, n1)
-    }
     return if (n == m) n
     else n * m / gcd(m, n)
 }
@@ -170,19 +176,7 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    if ((m == 1 && n == 1) || (n == 0 && m == 0)) return true
-    else {
-        var k = 2
-        while (max(m, n) > k) {
-            if (m % k == 0 && n % k == 0) {
-                break
-            } else k++
-        }
-        return (max(m, n) == k)
-    }
-}
-
+fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
 
 /**
  * Средняя (3 балла)
@@ -215,7 +209,6 @@ fun revert(n: Int): Int {
  */
 fun isPalindrome(n: Int): Boolean = n == revert(n)
 
-
 /**
  * Средняя (3 балла)
  *
@@ -245,11 +238,10 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    var sinx = x
     var factorial = 2
     var xx = x % (2 * PI)
     var l = xx
-    sinx = xx
+    var sinx = xx
     while (abs(l) > eps) {
         l = l * sqr(xx) / (factorial * (factorial + 1)) * -1
         sinx += l
@@ -297,7 +289,7 @@ fun squareSequenceDigit(n: Int): Int {
     var x = 2
     while (count < n) {
         num = sqr(x)
-        count += digitNumber(sqr(x))
+        count += digitNumber(num)
         x += 1
     }
     return if (count == n) num % 10
@@ -320,7 +312,7 @@ fun fibSequenceDigit(n: Int): Int {
     var x = 1
     while (count < n) {
         num = fib(x)
-        count += digitNumber(fib(x))
+        count += digitNumber(num)
         x += 1
     }
     return if (count == n) num % 10
