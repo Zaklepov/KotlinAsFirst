@@ -210,9 +210,11 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     var result = mutableMapOf<String, String>()
     for ((key, value) in mapA){
+        if (key.isEmpty()) result[key] = ""
         result += Pair(key, value)
     }
     for ((key, value) in mapB){
+        if (key.isEmpty()) result[key] = ""
         if (result.contains(key) && !result.containsValue(value)) {
             result[key] += ", " + value
         }
@@ -272,6 +274,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
         }
     }
     return if (result == Pair("", Double.MAX_VALUE)) null
+    else if (kind.isEmpty() || stuff.isEmpty()) ""
     else result.first
 }
 
@@ -293,7 +296,8 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     for (element in chars) {
         if (element !in chars2) flag = 0
     }
-    return if (chars.isEmpty()) false
+    return if (word.isEmpty()) true
+    else if (chars.isEmpty()) false
     else flag == 1
 }
 
