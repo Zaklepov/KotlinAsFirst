@@ -6,7 +6,9 @@ import kotlinx.html.I
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import lesson3.task1.digitNumber
+import lesson3.task1.isPrime
 import lesson3.task1.revert
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 // Урок 4: списки
@@ -101,13 +103,13 @@ fun squares(vararg array: Int) = squares(array.toList()).toTypedArray()
  * Пробелы не следует принимать во внимание при сравнении символов, например, строка
  * "А роза упала на лапу Азора" является палиндромом.
  */
-fun isPalindrome(str: String): Boolean {
-    val lowerCase = str.lowercase().filter { it != ' ' }
-    for (i in 0..lowerCase.length / 2) {
-        if (lowerCase[i] != lowerCase[lowerCase.length - i - 1]) return false
+    fun isPalindrome(str: String): Boolean {
+        val lowerCase = str.lowercase().filter { it != ' ' }
+        for (i in 0..lowerCase.length / 2) {
+            if (lowerCase[i] != lowerCase[lowerCase.length - i - 1]) return false
+        }
+        return true
     }
-    return true
-}
 
 /**
  * Пример
@@ -138,13 +140,13 @@ fun abs(v: List<Double>): Double {
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
 fun mean(list: List<Double>): Double {
-    var result = 0.0
-    if (list.isEmpty()) return result
+    return if (list.isEmpty()) 0.0
     else {
+        var result = 0.0
         for (i in list) {
             result += i
         }
-        return result / list.size
+        result / list.size
     }
 }
 
@@ -158,13 +160,10 @@ fun mean(list: List<Double>): Double {
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     var sr = mean(list)
-    if (list.isEmpty()) return list
-    else {
-        for ((i) in list.withIndex()) {
-            list[i] = list[i] - sr
-        }
-        return list
+    for (i in list.indices) {
+        list[i] = list[i] - sr
     }
+    return list
 }
 
 /**
@@ -178,16 +177,12 @@ fun times(a: List<Int>, b: List<Int>): Int {
     var c = 0
     if (a.isEmpty() || b.isEmpty()) return 0
     else {
-        for ((i) in a.withIndex()) {
-            for ((j) in b.withIndex()) {
-                if (i == j) {
-                    c += a[i] * b[j]
-                }
-            }
+        for (i in a.indices) {
+            c += a[i] * b[i]
         }
-    };return c
+    }
+    return c
 }
-
 /**
  * Средняя (3 балла)
  *
@@ -199,7 +194,7 @@ fun times(a: List<Int>, b: List<Int>): Int {
 fun polynom(p: List<Int>, x: Int): Int {
     var summ = 0
     if (p.isEmpty()) return 0
-    for ((i) in p.withIndex())
+    for (i in p.indices)
         summ += p[i] * Math.pow(x.toDouble(), i.toDouble()).toInt()
     return summ
 }
@@ -217,7 +212,7 @@ fun polynom(p: List<Int>, x: Int): Int {
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
     if (list.isEmpty()) return list
     else {
-        for ((i) in list.withIndex()) {
+        for (i in list.indices) {
             if (i != 0) {
                 list[i] += list[i - 1]
             }
@@ -234,14 +229,21 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
+    if (isPrime(n)) return mutableListOf(n)
     var number = n
     var result = mutableListOf<Int>()
     var del = 2
-    while (del <= number) {
+    while (del <= sqrt(n.toDouble()) + 1) {
         if (number % del == 0) {
             result.add(del)
             number /= del
-        } else del += 1
+        }
+        else {
+            del += 1
+            while (!isPrime(del)) {
+                del += 1
+            }
+        }
     }
     return result
 }
@@ -267,10 +269,11 @@ fun convert(n: Int, base: Int): List<Int> {
     var result = mutableListOf<Int>()
     var number = n
     if (n == 0) result.add(0)
-    else{
-    while (number > 0) {
-        result.add(number % base)
-        number /= base }
+    else {
+        while (number > 0) {
+            result.add(number % base)
+            number /= base
+        }
     }
     return result.reversed()
 }
@@ -290,12 +293,12 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     var list = convert(n, base)
     var result: String = ""
-    for ((i) in list.withIndex()) {
+    for (i in list.indices) {
         if (list[i] <= 9) {
             result += list[i]
 
         } else {
-            result += ('\u0061' + list[i] - 10)
+            result += ('a' + list[i] - 10)
         }
     }
     return result
@@ -333,10 +336,10 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     var result = mutableListOf<Int>()
     for (char in str) {
-        if (char in '\u0030'..'\u0039') {
-            result.add(char - '\u0030')
+        if (char in '0'..'9') {
+            result.add(char - '0')
         } else {
-            result.add((char - '\u0061') + 10)
+            result.add((char - 'a') + 10)
         }
     }
     return decimal(result, base)
@@ -351,34 +354,38 @@ fun decimalFromString(str: String, base: Int): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 fun roman(n: Int): String {
-    var list = mutableListOf<Int>()
+    var list = convert(n, 10).reversed()
     var result = mutableListOf<String>()
-    var number = n
-    while (number > 0) {
-        list.add(number % 10)
-        number /= 10
-    }
-    for ((i) in list.withIndex()) {
-        when {
-            i == 0 && list[i] in 1..3 -> result += "I".repeat(list[i] % 10)
-            i == 0 && list[i] == 4 -> result += "IV"
-            i == 0 && list[i] == 5 -> result += "V"
-            i == 0 && list[i] in 6..8 -> result += "V" + "I".repeat(list[i] % 10 - 5)
-            i == 0 && list[i] == 9 -> result += "IX"
-            i == 1 && list[i] in 1..3 -> result += "X".repeat(list[i] % 10)
-            i == 1 && list[i] == 4 -> result += "XL"
-            i == 1 && list[i] == 5 -> result += "L"
-            i == 1 && list[i] in 6..8 -> result += "L" + "X".repeat(list[i] % 10 - 5)
-            i == 1 && list[i] == 9 -> result += "XC"
-            i == 2 && list[i] in 1..3 -> result += "C".repeat(list[i] % 10)
-            i == 2 && list[i] == 4 -> result += "CD"
-            i == 2 && list[i] == 5 -> result += "D"
-            i == 2 && list[i] in 6..8 -> result += "D" + "C".repeat(list[i] % 10 - 5)
-            i == 2 && list[i] == 9 -> result += "CM"
-            i == 3 && list[i] in 1..3 -> result += "M".repeat(list[i] % 10)
-            list[i] == 0 -> result = result
+    for (i in list.indices) {
+        when (i) {
+            0 -> when {
+                list[i] in 1..3 -> result += "I".repeat(list[i] % 10)
+                list[i] == 4 -> result += "IV"
+                list[i] == 5 -> result += "V"
+                list[i] in 6..8 -> result += "V" + "I".repeat(list[i] % 10 - 5)
+                list[i] == 9 -> result += "IX"
 
+            }
+
+            1 -> when {
+                list[i] in 1..3 -> result += "X".repeat(list[i] % 10)
+                list[i] == 4 -> result += "XL"
+                list[i] == 5 -> result += "L"
+                list[i] in 6..8 -> result += "L" + "X".repeat(list[i] % 10 - 5)
+                list[i] == 9 -> result += "XC"
+            }
+
+            2 -> when {
+                list[i] in 1..3 -> result += "C".repeat(list[i] % 10)
+                list[i] == 4 -> result += "CD"
+                list[i] == 5 -> result += "D"
+                list[i] in 6..8 -> result += "D" + "C".repeat(list[i] % 10 - 5)
+                list[i] == 9 -> result += "CM"
+            }
+
+            3 -> result += "M".repeat(list[i] % 10)
         }
+        if (list[i] == 0) result = result
     }
     return result.reversed().joinToString(separator = "")
 }
