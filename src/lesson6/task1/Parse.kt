@@ -152,7 +152,22 @@ fun dateDigitToStr(digital: String): String {
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    var num = phone.split("").filter { it != "" && it != "-" && it != " " }
+    if (num.contains("(") && !num.contains(")") || num.contains(")") && !num.contains("(")) return ""
+    var result = ""
+    for (i in num.indices) {
+        if (i == 0 && num[i] == "+") result += num[0]
+        else if (i != 0 && num[i] == "+") return ""
+        else if (i != num.size - 1 && (num[i] == ")" || num[i] == "(") && (num[i + 1] == ")" || num[i + 1] == "(")) return ""
+    }
+    num = num.filter { it != "" && it != "(" && it != ")" && it != "+" }
+    for (i in num.indices) {
+        if (Regex("""\d""").find(num[i]) == null) return ""
+        else result += num[i]
+    }
+    return result
+}
 
 /**
  * Средняя (5 баллов)
@@ -185,7 +200,23 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    var jump = jumps.split(" ").filter { it != "" && it != " " }
+    var mapofjumps = mutableMapOf<Int, String>()
+    var result = listOf<Int>()
+    if (Regex("""\d+""").find(jump.first()) == null) return -1
+    for (i in jump.indices) {
+        if (Regex("""[\d+\-+\++\%+]""").find(jump[i]) == null) return -1
+    }
+    jump = jump.filter { it != "-" && it != "%" }
+    for (i in jump.indices) {
+        if (i != jump.size - 1 && jump[i + 1] == "+" && Regex("""\d+""").find(jump[i]) != null) {
+            result += jump[i].toInt()
+        }
+    }
+    return result.max()
+}
+
 /**
  * Сложная (6 баллов)
  *

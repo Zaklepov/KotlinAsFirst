@@ -201,10 +201,10 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     var result = mapA.toMutableMap()
     for ((key, value) in mapB) {
+        if (key == "" && !result.containsKey("")) result += Pair(key, "")
+        if (value == "") result[key] = result[key] + ", " + value
         if (!result.containsKey(key)) result += Pair(key, "")
         if (!result.containsValue(value)) result[key] = result[key] + ", " + value
-        if (key == "" && !result.containsKey("")) result += Pair(key, "")
-        if (value == "" && !result.containsValue("")) result[key] = result[key] + ", " + value
     }
     for ((key, value) in result) {
         if (value.first() == ',') result[key] = value.drop(2)
