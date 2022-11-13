@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import ru.spbstu.wheels.NullableMonad.filter
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -97,23 +99,12 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val res = mutableMapOf<Int, List<String>>()
-    var counter = 5
-    while (counter > 0) {
-        var listofstudents = mutableListOf<String>()
-        for ((student, grade) in grades) {
-            if (grade == counter) {
-                listofstudents += student
-
-            }
-        }
-        if (listofstudents.isEmpty()) counter -= 1
-        else {
-            res[counter] = listofstudents
-            counter -= 1
-        }
+    var result = mutableMapOf<Int, List<String>>()
+    for ((key, value) in grades) {
+        if (!result.containsKey(value)) result[value] = emptyList()
+        result[value] = result[value]!! + key
     }
-    return res
+    return result
 }
 /**
  * Простая (2 балла)
@@ -187,7 +178,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
             }
         }
     }
-    return result
+    return result.distinct()
 }
 
 /**
@@ -208,17 +199,13 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
-    var result = mutableMapOf<String, String>()
-    for ((key, value) in mapA){
-        if (key.isEmpty()) result[key] = ""
-        result += Pair(key, value)
+    var result = mapA.toMutableMap()
+    for ((key, value) in mapB) {
+        if (!result.containsKey(key)) result += Pair(key, "")
+        if (!result.containsValue(value)) result[key] = result[key] + ", " + value
     }
-    for ((key, value) in mapB){
-        if (key.isEmpty()) result[key] = ""
-        if (result.contains(key) && !result.containsValue(value)) {
-            result[key] += ", " + value
-        }
-        else result += Pair(key, value)
+    for ((key, value) in result) {
+        if (value.first() == ',') result[key] = value.drop(2)
     }
     return result
 }
@@ -270,11 +257,11 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     var result = Pair("", Double.MAX_VALUE)
     for ((key, value) in stuff) {
         if (value.first == kind) {
-            if (value.second < result.second) result = Pair(key, value.second)
+            if (value.second == Double.MAX_VALUE)
+                if (value.second < result.second) result = Pair(key, value.second)
         }
     }
     return if (result == Pair("", Double.MAX_VALUE)) null
-    else if (kind.isEmpty() || stuff.isEmpty()) ""
     else result.first
 }
 
@@ -288,13 +275,14 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
+
     var chars2 = mutableSetOf<Char>()
     var flag = 1
     for (element in word) {
         chars2.add(element)
     }
     for (element in chars) {
-        if (element !in chars2) flag = 0
+        if (element.lowercaseChar() !in chars2) flag = 0
     }
     return if (word.isEmpty()) true
     else if (chars.isEmpty()) false
@@ -377,18 +365,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "GoodGnome" to setOf()
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    var result = mutableMapOf<String, Set<String>>()
-    result = friends.toMutableMap()
-    for ((key, value) in friends) {
-        for (element in value) {
-            if (!friends.containsKey(element)) result += Pair(element, mutableSetOf())
-            result[key] = result[key]!! + result[element]!!.filter { it != key }
-        }
-    }
-    return result
-}
-
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 /**
  * Сложная (6 баллов)
  *
