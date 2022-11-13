@@ -207,7 +207,9 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     for ((key, value) in result) {
         if (value.first() == ',') result[key] = value.drop(2)
     }
-    return if (mapA.isEmpty() && mapB.isEmpty()) mapOf(Pair("", ""))
+    return if (mapA.isEmpty() && mapB.isEmpty()) emptyMap()
+    else if (mapA == mapOf<String, String>(Pair("", "")) || mapB == mapOf<String, String>(Pair("", "")))
+        mapOf<String, String>(Pair("", ""))
     else result
 }
 
@@ -283,8 +285,8 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     for (element in word) {
         charsinword.add(element)
     }
-    for (element in charsinword) {
-        if (element.lowercaseChar() !in chars) flag = 0
+    for (element in charsinword){
+        if (!chars.contains(element)) flag = 0
     }
     return if (word.isEmpty()) true
     else if (chars.isEmpty()) false
