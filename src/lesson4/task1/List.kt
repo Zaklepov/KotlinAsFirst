@@ -233,18 +233,13 @@ fun factorize(n: Int): List<Int> {
     var number = n
     var result = mutableListOf<Int>()
     var del = 2
-    while (del <= Math.pow(n.toDouble(), 2.0 / 3.0)) {
+    while (del <= sqrt(n.toDouble())) {
         if (number % del == 0) {
             result.add(del)
             number /= del
-        }
-        else {
-            del += 1
-            while (!isPrime(del)) {
-                del += 1
-            }
-        }
+        } else del += 1
     }
+    if (result.reduce { acc, i -> acc * i } != n) result.add(n / result.reduce { acc, i -> acc * i })
     return result
 }
 
