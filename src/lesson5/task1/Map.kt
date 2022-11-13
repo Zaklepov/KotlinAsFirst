@@ -203,13 +203,13 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     for ((key, value) in mapB) {
         if (!result.containsKey(key)) result += Pair(key, "")
         if (!result.containsValue(value)) result[key] = result[key] + ", " + value
+        if (key == "" && !result.containsKey("")) result += Pair(key, "")
+        if (value == "" && !result.containsValue("")) result[key] = result[key] + ", " + value
     }
     for ((key, value) in result) {
         if (value.first() == ',') result[key] = value.drop(2)
     }
     return if (mapA.isEmpty() && mapB.isEmpty()) emptyMap()
-    else if (mapA == mapOf<String, String>(Pair("", "")) || mapB == mapOf<String, String>(Pair("", "")))
-        mapOf<String, String>(Pair("", ""))
     else result
 }
 
