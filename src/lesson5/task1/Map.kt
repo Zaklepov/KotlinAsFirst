@@ -2,7 +2,7 @@
 
 package lesson5.task1
 
-import ru.spbstu.wheels.NullableMonad.filter
+import kotlin.reflect.jvm.internal.impl.metadata.`ProtoBuf$PackageOrBuilder`
 
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
@@ -207,7 +207,8 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     for ((key, value) in result) {
         if (value.first() == ',') result[key] = value.drop(2)
     }
-    return result
+    return if (mapA.isEmpty() && mapB.isEmpty()) mapOf(Pair("", ""))
+    else result
 }
 
 /**
@@ -254,15 +255,16 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var result = Pair("", Double.MAX_VALUE)
+    var result = mutableMapOf<String, Double>()
     for ((key, value) in stuff) {
-        if (value.first == kind) {
-            if (value.second == Double.MAX_VALUE)
-                if (value.second < result.second) result = Pair(key, value.second)
-        }
+        if (value.first == kind) result += Pair(key, value.second)
     }
-    return if (result == Pair("", Double.MAX_VALUE)) null
-    else result.first
+    var min = Pair("", -1.0)
+    for ((key, value) in result) {
+        if (min.second > value || min.second == -1.0) min = Pair(key, value)
+    }
+    return if (min.second == -1.0) null
+    else min.first
 }
 
 /**
@@ -276,13 +278,13 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
 
-    var chars2 = mutableSetOf<Char>()
+    var charsinword = mutableSetOf<Char>()
     var flag = 1
     for (element in word) {
-        chars2.add(element)
+        charsinword.add(element)
     }
-    for (element in chars) {
-        if (element.lowercaseChar() !in chars2) flag = 0
+    for (element in charsinword) {
+        if (element.lowercaseChar() !in chars) flag = 0
     }
     return if (word.isEmpty()) true
     else if (chars.isEmpty()) false
