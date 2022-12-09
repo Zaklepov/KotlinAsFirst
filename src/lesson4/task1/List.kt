@@ -175,11 +175,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  */
 fun times(a: List<Int>, b: List<Int>): Int {
     var c = 0
-    if (a.isEmpty() || b.isEmpty()) return 0
-    else {
-        for (i in a.indices) {
-            c += a[i] * b[i]
-        }
+    for (i in a.indices) {
+        c += a[i] * b[i]
     }
     return c
 }
@@ -291,13 +288,13 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     var list = convert(n, base)
-    var result: String = ""
-    for (i in list.indices) {
-        if (list[i] <= 9) {
-            result += list[i]
-
-        } else {
-            result += ('a' + list[i] - 10)
+    val result = buildString {
+        for (i in list.indices) {
+            if (list[i] <= 9) {
+                append(list[i])
+            } else {
+                append('a' + list[i] - 10)
+            }
         }
     }
     return result
@@ -357,29 +354,29 @@ fun roman(n: Int): String {
     var result = mutableListOf<String>()
     for (i in list.indices) {
         when (i) {
-            0 -> when {
-                list[i] in 1..3 -> result += "I".repeat(list[i] % 10)
-                list[i] == 4 -> result += "IV"
-                list[i] == 5 -> result += "V"
-                list[i] in 6..8 -> result += "V" + "I".repeat(list[i] % 10 - 5)
-                list[i] == 9 -> result += "IX"
+            0 -> when (list[i]) {
+                in 1..3 -> result += "I".repeat(list[i] % 10)
+                4 -> result += "IV"
+                5 -> result += "V"
+                in 6..8 -> result += "V" + "I".repeat(list[i] % 10 - 5)
+                9 -> result += "IX"
 
             }
 
-            1 -> when {
-                list[i] in 1..3 -> result += "X".repeat(list[i] % 10)
-                list[i] == 4 -> result += "XL"
-                list[i] == 5 -> result += "L"
-                list[i] in 6..8 -> result += "L" + "X".repeat(list[i] % 10 - 5)
-                list[i] == 9 -> result += "XC"
+            1 -> when (list[i]) {
+                in 1..3 -> result += "X".repeat(list[i] % 10)
+                4 -> result += "XL"
+                5 -> result += "L"
+                in 6..8 -> result += "L" + "X".repeat(list[i] % 10 - 5)
+                9 -> result += "XC"
             }
 
-            2 -> when {
-                list[i] in 1..3 -> result += "C".repeat(list[i] % 10)
-                list[i] == 4 -> result += "CD"
-                list[i] == 5 -> result += "D"
-                list[i] in 6..8 -> result += "D" + "C".repeat(list[i] % 10 - 5)
-                list[i] == 9 -> result += "CM"
+            2 -> when (list[i]) {
+                in 1..3 -> result += "C".repeat(list[i] % 10)
+                4 -> result += "CD"
+                5 -> result += "D"
+                in 6..8 -> result += "D" + "C".repeat(list[i] % 10 - 5)
+                9 -> result += "CM"
             }
 
             3 -> result += "M".repeat(list[i] % 10)

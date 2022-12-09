@@ -94,7 +94,7 @@ fun dateStrToDigit(str: String): String {
         "ноября" to "11",
         "декабря" to "12",
     )
-    val check = Regex("""\d+ [а-я]+ \d+""").find(str)
+    val check = Regex("""^\d+ [а-я]+ \d+$""").find(str)
     if (check == null) return ""
     val list = str.split(" ").toMutableList()
     if (!month.containsKey(list[1])) return ""
@@ -128,7 +128,7 @@ fun dateDigitToStr(digital: String): String {
         "11" to "ноября",
         "12" to "декабря",
     )
-    val check = Regex("""\d+\.\d+\.\d+\b""").find(digital)
+    val check = Regex("""^\d+\.\d+\.\d+\b$""").find(digital)
     if (check == null) return ""
     val list = digital.split(".").toMutableList()
     if (!month.containsKey(list[1]) || daysInMonth(list[1].toInt(), list[2].toInt()) < list[0].toInt() || list.size > 3)
@@ -152,22 +152,7 @@ fun dateDigitToStr(digital: String): String {
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String {
-    var num = phone.split("").filter { it != "" && it != "-" && it != " " }
-    if (num.contains("(") && !num.contains(")") || num.contains(")") && !num.contains("(")) return ""
-    var result = ""
-    for (i in num.indices) {
-        if (i == 0 && num[i] == "+") result += num[0]
-        else if (i != 0 && num[i] == "+") return ""
-        else if (i != num.size - 1 && (num[i] == ")" || num[i] == "(") && (num[i + 1] == ")" || num[i + 1] == "(")) return ""
-    }
-    num = num.filter { it != "" && it != "(" && it != ")" && it != "+" }
-    for (i in num.indices) {
-        if (Regex("""\d""").find(num[i]) == null) return ""
-        else result += num[i]
-    }
-    return result
-}
+fun flattenPhoneNumber(phone: String): String = TODO()
 
 /**
  * Средняя (5 баллов)
@@ -182,7 +167,7 @@ fun flattenPhoneNumber(phone: String): String {
 fun bestLongJump(jumps: String): Int {
     val num = jumps.split("-", " ", "%").filter { it != "" }
     for (element in num) {
-        val check = Regex("""\d+""").find(element)
+        val check = Regex("""^\d+$""").find(element)
         if (check == null) return -1
     }
     return if (num.isEmpty()) -1
@@ -204,7 +189,7 @@ fun bestHighJump(jumps: String): Int {
     var jump = jumps.split(" ").filter { it != "" && it != " " }
     var mapofjumps = mutableMapOf<Int, String>()
     var result = listOf<Int>()
-    if (Regex("""\d+""").find(jump.first()) == null) return -1
+    if (Regex("""^\d+$""").find(jump.first()) == null) return -1
     for (i in jump.indices) {
         if (Regex("""[\d+\-+\++\%+]""").find(jump[i]) == null) return -1
     }
@@ -226,7 +211,22 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    if (Regex("""^\d+$""").find(expression) != null) return expression.toInt()
+    if (Regex("""^((\d+ [+-] )+\d+)$""").find(expression) == null) throw IllegalArgumentException()
+    val express = expression.split(" ").filter { it != " " && it != "" }
+    var result = express.first().toInt()
+    var previouselement = ""
+    for (element in express) {
+        if (previouselement == "-") {
+            result -= element.toInt()
+        } else if (previouselement == "+") {
+            result += element.toInt()
+        }
+        previouselement = element
+    }
+    return result
+}
 
 /**
  * Сложная (6 баллов)
@@ -237,7 +237,21 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    if (Regex("""^([а-я|ё|А-Я|Ё]+ )*([а-я|ё|А-Я|Ё]+)$""") == null) return -1
+    val words = str.split(" ").filter { it != "" && it != " " }
+    var prevelement = ""
+    var counter = 0
+    for (element in words) {
+        if (prevelement == element.lowercase()) break
+        if (prevelement != "") counter += prevelement.length + 1
+        prevelement = element.lowercase()
+    }
+    if (words.size == 1 || counter == str.length - words.last().length) return -1
+    else return counter
+}
+
+
 
 /**
  * Сложная (6 баллов)
@@ -250,7 +264,24 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    if (Regex("""^([а-я|ё|А-Я|Ё]+ \d+(\.\d)?\; )*([а-я|ё|А-Я|Ё]+ \d+(\.\d)?)$""").find(description) == null) return ""
+    val desc = description.split(";", " ").filter { it != " " && it != "" }
+    var res = Pair("", 0.0)
+    for (i in desc.indices) {
+        if (Regex("""^(\d+\.\d)$""").find(desc[i]) != null) {
+            val desci = desc[i].split(".").filter { it != "" && it != " " }
+            val num = desci.first().toDouble() + desci.last().toDouble() / 10
+            if (res.second < num) {
+                res = Pair(desc[i - 1], num)
+            }
+        }
+        if (Regex("""^(\d+)$""").find(desc[i]) != null && res.second < desc[i].toDouble()) {
+            res = Pair(desc[i - 1], desc[i].toDouble())
+        }
+    }
+    return res.first
+}
 
 /**
  * Сложная (6 баллов)

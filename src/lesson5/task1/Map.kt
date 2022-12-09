@@ -2,7 +2,6 @@
 
 package lesson5.task1
 
-import kotlin.reflect.jvm.internal.impl.metadata.`ProtoBuf$PackageOrBuilder`
 
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
@@ -118,19 +117,13 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
     var flag = 1
-    for ((element1) in a) {
-        if (element1 !in b) {
-            flag = 0
-            break
-        } else {
-            if (a[element1] == b[element1]) flag = 1
-            else {
-                flag = 0
-                break
-            }
+    for ((key, value) in a) {
+        if (!b.containsKey(key)) {
+            return false
         }
+        if (value != b[key]) return false
     }
-    return flag == 1
+    return true
 }
 /**
  * Простая (2 балла)
@@ -167,13 +160,13 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
     var result = mutableListOf<String>()
     if (a.size >= b.size) {
         for ((element) in a.withIndex()) {
-            if (a[element] in b) {
+            if (b.contains(a[element])) {
                 result.add(a[element])
             }
         }
     } else {
         for ((element) in b.withIndex()) {
-            if (b[element] in a) {
+            if (a.contains(b[element])) {
                 result.add(b[element])
             }
         }
@@ -390,11 +383,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     var array = list
     var result = Pair(-1, -1)
-    for (key1 in 0..array.size - 1) {
-        for (key2 in key1 + 1..array.size - 1) {
-            if (array[key1] + array[key2] == number) result = Pair(key1, key2)
-        }
+    for (key in 0..array.size - 1) {
+        if (list.contains(number - list[key])) result = Pair(list.indexOf(number - list[key]), key)
     }
+    if (result.first == result.second) result = Pair(-1, -1)
     return result
 }
 
