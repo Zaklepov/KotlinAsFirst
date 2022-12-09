@@ -266,7 +266,8 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    if (Regex("""^([а-я|ё|А-Я|Ё]+ \d+(\.\d)?\; )*([а-я|ё|А-Я|Ё]+ \d+(\.\d)?)$""").find(description) == null) return ""
+    if (Regex("""^([а-я|ё|А-Я|Ё|\w]+ \d+(\.\d)?\; )*([а-я|ё|А-Я|Ё|\w]+ \d+(\.\d)?)$""").find(description) == null)
+        return ""
     val desc = description.split(";", " ").filter { it != " " && it != "" }
     var res = Pair("", 0.0)
     for (i in desc.indices) {
