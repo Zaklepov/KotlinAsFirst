@@ -80,7 +80,7 @@ fun main() {
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    var month = mutableMapOf<String, String>(
+    val month = mutableMapOf<String, String>(
         "января" to "01",
         "февраля" to "02",
         "марта" to "03",
@@ -114,7 +114,7 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    var month = mutableMapOf<String, String>(
+    val month = mutableMapOf<String, String>(
         "01" to "января",
         "02" to "февраля",
         "03" to "марта",
@@ -165,11 +165,8 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
+    if (Regex("""^(\d+ |- |% )*(\d+|-|%)$""").find(jumps) == null) return -1
     val num = jumps.split("-", " ", "%").filter { it != "" }
-    for (element in num) {
-        val check = Regex("""^\d+$""").find(element)
-        if (check == null) return -1
-    }
     return if (num.isEmpty()) -1
     else num.max().toInt()
 }
@@ -186,17 +183,13 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
+    if (Regex("""^(\d+ [+\-%]+ )*(\d+ [+\-%]+)$""").find(jumps) == null) return -1
     var jump = jumps.split(" ").filter { it != "" && it != " " }
-    var mapofjumps = mutableMapOf<Int, String>()
     var result = listOf<Int>()
-    if (Regex("""^\d+$""").find(jump.first()) == null) return -1
-    for (i in jump.indices) {
-        if (Regex("""[\d+\-+\++\%+]""").find(jump[i]) == null) return -1
-    }
     jump = jump.filter { it != "-" && it != "%" }
     for (i in jump.indices) {
         if (i != jump.size - 1 && jump[i + 1] == "+" && Regex("""\d+""").find(jump[i]) != null) {
-            result += jump[i].toInt()
+            result = result + jump[i].toInt()
         }
     }
     return result.max()
@@ -216,14 +209,14 @@ fun plusMinus(expression: String): Int {
     if (Regex("""^((\d+ [+-] )+\d+)$""").find(expression) == null) throw IllegalArgumentException()
     val express = expression.split(" ").filter { it != " " && it != "" }
     var result = express.first().toInt()
-    var previouselement = ""
+    var prevelement = ""
     for (element in express) {
-        if (previouselement == "-") {
+        if (prevelement == "-") {
             result -= element.toInt()
-        } else if (previouselement == "+") {
+        } else if (prevelement == "+") {
             result += element.toInt()
         }
-        previouselement = element
+        prevelement = element
     }
     return result
 }
@@ -239,7 +232,7 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     if (str.isEmpty()) return -1
-    if (Regex("""^([а-я|ё|А-Я|Ё]+ )*([а-я|ё|А-Я|Ё]+)$""") == null) return -1
+    if (Regex("""^([а-яёА-ЯЁ]+ )*([а-яёА-ЯЁ]+)$""").find(str) == null) return -1
     val words = str.split(" ").filter { it != "" && it != " " }
     var prevelement = ""
     var counter = 0
@@ -248,8 +241,8 @@ fun firstDuplicateIndex(str: String): Int {
         if (prevelement != "") counter += prevelement.length + 1
         prevelement = element.lowercase()
     }
-    if (words.size == 1 || counter == str.length - words.last().length) return -1
-    else return counter
+    return if (words.size == 1 || counter == str.length - words.last().length) -1
+    else counter
 }
 
 
@@ -266,7 +259,7 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    if (Regex("""^([а-я|ё|А-Я|Ё|\w]+ \d+(\.\d+)?\; )*([а-я|ё|А-Я|Ё|\w]+ \d+(\.\d+)?)$""").find(description) == null)
+    if (Regex("""^(\D+ \d+(\.\d+)?; )*(\D+ \d+(\.\d+)?)$""").find(description) == null)
         return ""
     val desc = description.split(";", " ").filter { it != " " && it != "" }
     var res = Pair("", 0.0)

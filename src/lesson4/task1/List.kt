@@ -103,13 +103,13 @@ fun squares(vararg array: Int) = squares(array.toList()).toTypedArray()
  * Пробелы не следует принимать во внимание при сравнении символов, например, строка
  * "А роза упала на лапу Азора" является палиндромом.
  */
-    fun isPalindrome(str: String): Boolean {
-        val lowerCase = str.lowercase().filter { it != ' ' }
-        for (i in 0..lowerCase.length / 2) {
-            if (lowerCase[i] != lowerCase[lowerCase.length - i - 1]) return false
-        }
-        return true
+fun isPalindrome(str: String): Boolean {
+    val lowerCase = str.lowercase().filter { it != ' ' }
+    for (i in 0..lowerCase.length / 2) {
+        if (lowerCase[i] != lowerCase[lowerCase.length - i - 1]) return false
     }
+    return true
+}
 
 /**
  * Пример
@@ -159,7 +159,7 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    var sr = mean(list)
+    val sr = mean(list)
     for (i in list.indices) {
         list[i] = list[i] - sr
     }
@@ -207,12 +207,9 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    if (list.isEmpty()) return list
-    else {
-        for (i in list.indices) {
-            if (i != 0) {
-                list[i] += list[i - 1]
-            }
+    for (i in list.indices) {
+        if (i != 0) {
+            list[i] += list[i - 1]
         }
     }
     return list
@@ -228,7 +225,7 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 fun factorize(n: Int): List<Int> {
     if (isPrime(n)) return mutableListOf(n)
     var number = n
-    var result = mutableListOf<Int>()
+    val result = mutableListOf<Int>()
     var del = 2
 
     while (del <= number) {
@@ -262,7 +259,7 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
 fun convert(n: Int, base: Int): List<Int> {
-    var result = mutableListOf<Int>()
+    val result = mutableListOf<Int>()
     var number = n
     if (n == 0) result.add(0)
     else {
@@ -287,7 +284,7 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    var list = convert(n, base)
+    val list = convert(n, base)
     val result = buildString {
         for (i in list.indices) {
             if (list[i] <= 9) {
@@ -330,7 +327,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    var result = mutableListOf<Int>()
+    val result = mutableListOf<Int>()
     for (char in str) {
         if (char in '0'..'9') {
             result.add(char - '0')
@@ -350,7 +347,7 @@ fun decimalFromString(str: String, base: Int): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 fun roman(n: Int): String {
-    var list = convert(n, 10).reversed()
+    val list = convert(n, 10).reversed()
     var result = mutableListOf<String>()
     for (i in list.indices) {
         when (i) {
@@ -394,7 +391,7 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    var numbers = arrayOf(
+    val numbers = arrayOf(
         "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять",
         "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать",
         "восемнадцать", "девятнадцать", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят",
@@ -407,7 +404,7 @@ fun russian(n: Int): String {
     var flag3 = 0
     var flag1 = 0
     while (number > 0) {
-        var x = number / Math.pow(10.0, count.toDouble()).toInt()
+        val x = number / Math.pow(10.0, count.toDouble()).toInt()
         when {
             x == 0 -> list = list
             count == 5 -> {

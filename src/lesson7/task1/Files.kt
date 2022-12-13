@@ -3,6 +3,9 @@
 package lesson7.task1
 
 import java.io.File
+import java.io.InputStream
+import java.lang.StringBuilder
+import kotlin.math.max
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -63,7 +66,6 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
 }
 
 /**
@@ -92,7 +94,6 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
 }
 
 /**
@@ -233,7 +234,30 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var maxlen = 0
+    var flag = 0
+    for (line in File(inputName).readLines()) {
+        if (line.length > maxlen) maxlen = line.length
+    }
+    for (line in File(inputName).readLines()) {
+        val setofchar = line
+            .lowercase()
+            .toSet()
+            .size
+        if (maxlen == line.length && maxlen == setofchar) {
+            if (File(outputName).length().toInt() == 0) {
+                if (flag == 1) {
+                    writer.write(", ")
+                    writer.write(line)
+                } else {
+                    writer.write(line)
+                    flag = 1
+                }
+            }
+        }
+    }
+    writer.close()
 }
 
 /**
