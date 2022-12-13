@@ -66,6 +66,17 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()){
+        if (line.isEmpty()){
+        writer.newLine()
+        }
+        else if (line.first() != '_'){
+            writer.write(line)
+            writer.newLine()
+        }
+    }
+    writer.close()
 }
 
 /**
@@ -93,8 +104,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  * Исключения (жюри, брошюра, парашют) в рамках данного задания обрабатывать не нужно
  *
  */
-fun sibilants(inputName: String, outputName: String) {
-}
+fun sibilants(inputName: String, outputName: String) {}
 
 /**
  * Средняя (15 баллов)
