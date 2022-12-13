@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+import ru.spbstu.wheels.NullableMonad.map
 import java.io.File
 import java.io.InputStream
 import java.lang.StringBuilder
@@ -104,8 +105,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  * Исключения (жюри, брошюра, парашют) в рамках данного задания обрабатывать не нужно
  *
  */
-fun sibilants(inputName: String, outputName: String) {}
-
+fun sibilants(inputName: String, outputName: String){}
 /**
  * Средняя (15 баллов)
  *
@@ -247,10 +247,13 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var maxlen = 0
     var flag = 0
+    var set = setOf<String>()
     for (line in File(inputName).readLines()) {
-        if (line.length > maxlen) maxlen = line.length
+        val reg = Regex("""[\wа-яА-ЯЁё]+""").find(line)!!.value
+        if (reg.length > maxlen) maxlen = reg.length
+        set += reg
     }
-    for (line in File(inputName).readLines()) {
+    for (line in set) {
         val setofchar = line
             .lowercase()
             .toSet()
@@ -269,7 +272,6 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     }
     writer.close()
 }
-
 /**
  * Сложная (22 балла)
  *
