@@ -173,11 +173,11 @@ fun centerFile(inputName: String, outputName: String) {
     val midLen = maxLen / 2
     writer.use {
         for (line in lines) {
-            if (midLen != line.length / 2 && midLen % 2 == 0) {
+            if (midLen != line.length / 2 && line.length % 2 == 0) {
                 writer.write(" ".repeat(midLen - line.length / 2) + line)
                 writer.newLine()
-            } else if (midLen != line.length / 2 && midLen % 2 != 0) {
-                writer.write(" ".repeat(midLen - (line.length + 1) / 2) + line)
+            } else if (midLen != line.length && line.length % 2 != 0) {
+                writer.write(" ".repeat(midLen - (line.length) / 2) + line)
                 writer.newLine()
             } else {
                 writer.write(line)

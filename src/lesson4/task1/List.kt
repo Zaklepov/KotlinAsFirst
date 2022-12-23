@@ -232,11 +232,11 @@ fun factorize(n: Int): List<Int> {
         if (number % del == 0) {
             result.add(del)
             number /= del
-        } else if (isPrime(number)) {
-            result.add(number)
-            break
-        } else if (del == 2) del = 3
-        else del += 2
+        }
+        else {
+            if (del == 2) del = 3
+            else del += 2
+        }
     }
     return result
 }

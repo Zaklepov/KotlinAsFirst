@@ -156,23 +156,15 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    var aa = a.toTypedArray()
-    var bb = b.toTypedArray()
+    val aa = a.toSet()
+    val bb = b.toSet()
     val result = mutableListOf<String>()
-    if (aa.size >= bb.size) {
-        for ((element) in aa.withIndex()) {
-            if (bb.contains(aa[element])) {
-                result.add(aa[element])
-            }
-        }
-    } else {
-        for ((element) in bb.withIndex()) {
-            if (aa.contains(bb[element])) {
-                result.add(bb[element])
-            }
+    for (element in bb){
+        if (element in aa){
+            result.add(element)
         }
     }
-    return result.distinct()
+    return result
 }
 
 /**
@@ -383,12 +375,16 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val array = list.toIntArray()
-    var result = Pair(-1, -1)
+    var result1 = -1
+    var result2 = -1
     for (key in 0..array.size - 1) {
-        if (array.contains(number - list[key])) result = Pair(list.indexOf(number - list[key]), key)
+        if (array.contains(number - list[key])) {
+            result1 = list[key]
+            result2 = number - list[key]
+        }
     }
-    if (result.first == result.second) result = Pair(-1, -1)
-    return result
+    return if (result1 != -1 && result2 != -1 && result2 != result1) Pair(list.indexOf(result2), list.indexOf(result1))
+    else Pair(-1, -1)
 }
 
 /**
