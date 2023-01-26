@@ -273,7 +273,33 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    val text = File(inputName).readText()
+    val regexForSplit = Regex("""[^А-яёЁA-z]""")
+    var arrayOfWordsInText = text.split(regexForSplit).filter { it != "" }
+    var result = mutableMapOf<String, Int>()
+    for (element in arrayOfWordsInText) {
+        if (element.lowercase() !in result) result.put(element.lowercase(), 1)
+        else {
+            if (result[element.lowercase()] != null) result[element.lowercase()] = result[element.lowercase()]!! + 1
+        }
+    }
+    var sortedResult = result.toList().sortedByDescending { (k, v) -> v }.toMap()
+    var counter = 0
+    var minValue = 0
+    if (sortedResult.size > 20) {
+        for ((element, value) in sortedResult) {
+            if (counter == 20) {
+                minValue = value
+                break
+            }
+            counter++
+        }
+    }
+    sortedResult = sortedResult.filterValues { it >= minValue }
+    return sortedResult
+}
+
 
 /**
  * Средняя (14 баллов)
@@ -310,9 +336,30 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  *
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
-fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+
+fun upperFirstValueChar(str: String): String {
+    val build = StringBuilder()
+    for (i in str.toCharArray().indices) {
+        if (i == 0) build.append(str[i].uppercase())
+        else build.append(str[i].lowercase())
+    }
+    return build.toString()
 }
+
+fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
+    val writer = File(outputName).bufferedWriter()
+    var text = File(inputName).readText()
+    for ((element, value) in dictionary) {
+        if (Regex("""[а-яёa-z]""").find(element.lowercase()) != null) {
+            text = text.replace(element.uppercase(), upperFirstValueChar(value))
+        }
+        text = text.replace(element.lowercase(), value.lowercase())
+    }
+    writer.use {
+        writer.append(text)
+    }
+}
+
 
 /**
  * Средняя (12 баллов)
