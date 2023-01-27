@@ -2,14 +2,11 @@
 
 package lesson7.task1
 
-import ru.spbstu.wheels.NullableMonad.map
-import ru.spbstu.wheels.out
+import lesson3.task1.digitNumber
 import java.io.File
-import java.io.InputStream
+import java.lang.Math.pow
 import java.lang.StringBuilder
-import java.util.regex.Matcher
 import java.util.regex.Pattern
-import kotlin.math.max
 
 
 // Урок 7: работа с файлами
@@ -462,7 +459,36 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    writer.use {
+        writer.write("<html>")
+        writer.newLine()
+        writer.write("<body>")
+        writer.newLine()
+        writer.write("<p>")
+        for (line in File(inputName).readLines()) {
+            if (!line.isEmpty()) {
+                var currline = line
+                    .replace(Regex("""~~([^~]+)~~"""), "<s>$1</s>")
+                    .replace(Regex("""\*\*\*([^\*]+)\*\*\*"""), "<b><i>$1</i></b>")
+                    .replace(Regex("""\*\*([^\*]+)\*\*"""), "<b>$1</b>")
+                    .replace(Regex("""\*([^\*]+)\*"""), "<i>$1</i>")
+
+                writer.write(currline)
+                writer.newLine()
+            } else {
+                writer.write("</p>")
+                writer.newLine()
+                writer.write("<p>")
+                writer.newLine()
+            }
+        }
+        writer.write("</p>")
+        writer.newLine()
+        writer.write("</body>")
+        writer.newLine()
+        writer.write("</html>")
+    }
 }
 
 /**
@@ -604,7 +630,36 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val res = lhv * rhv
+    val size = digitNumber(res)
+    val maxLen = size + 1
+    val writer = File(outputName).bufferedWriter()
+    var num = rhv
+    writer.use {
+        writer.write(" ".repeat(maxLen - digitNumber(lhv)) + lhv)
+        writer.newLine()
+        writer.write("*" + " ".repeat(maxLen - digitNumber(rhv) - 1) + rhv)
+        writer.newLine()
+        writer.write("-".repeat(maxLen))
+        writer.newLine()
+        var count = 0
+        while (num > 0) {
+            if (count == 0) {
+                writer.write(" ".repeat(maxLen - digitNumber(lhv * (num % 10))) + lhv * (num % 10))
+                writer.newLine()
+                count++
+                num /= 10
+            } else {
+                writer.write("+" + " ".repeat(maxLen - count - digitNumber(lhv * (num % 10)) - 1) + lhv * (num % 10))
+                writer.newLine()
+                count++
+                num /= 10
+            }
+        }
+        writer.write("-".repeat(maxLen))
+        writer.newLine()
+        writer.write(" ".repeat(maxLen - size) + res)
+    }
 }
 
 
@@ -629,6 +684,32 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
+    val res = lhv / rhv
+    val resDiv = lhv % rhv
+    val lineLen = 4 + digitNumber(lhv)
+    val writer = File(outputName).bufferedWriter()
+    val numbersRes = res.toString().split("").filter { it != "" }
+    val numbersLhv = lhv.toString().split("").filter { it != "" }
+    var currNumber = 0
+    writer.use {
+        writer.write(" " + lhv + " " + "|" + " " + rhv)
+        writer.newLine()
+        var count = 0
+        for (i in numbersRes.indices) {
+            if (i == 0) {
+                writer.write(
+                    "-" + numbersRes[i].toInt() * rhv +
+                            " ".repeat(lineLen - digitNumber(numbersRes[i].toInt() * rhv) - 1) + res
+                )
+                writer.newLine()
+                writer.write("-".repeat(1 + digitNumber(numbersRes[i].toInt() * rhv)))
+                writer.newLine()
+            } else if (i == 1) {
+
+            }
+        }
+    }
     TODO()
 }
+
 

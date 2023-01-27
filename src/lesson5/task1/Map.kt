@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import java.util.function.BiFunction
+
 
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
@@ -16,8 +18,7 @@ package lesson5.task1
  * игнорируется.
  */
 fun shoppingListCost(
-    shoppingList: List<String>,
-    costs: Map<String, Double>
+    shoppingList: List<String>, costs: Map<String, Double>
 ): Double {
     var totalCost = 0.0
 
@@ -38,8 +39,7 @@ fun shoppingListCost(
  * для которых телефон начинается с заданного кода страны `countryCode`
  */
 fun filterByCountryCode(
-    phoneBook: MutableMap<String, String>,
-    countryCode: String
+    phoneBook: MutableMap<String, String>, countryCode: String
 ) {
     val namesToRemove = mutableListOf<String>()
 
@@ -61,8 +61,7 @@ fun filterByCountryCode(
  * и вернуть отфильтрованный текст
  */
 fun removeFillerWords(
-    text: List<String>,
-    vararg fillerWords: String
+    text: List<String>, vararg fillerWords: String
 ): List<String> {
     val fillerWordSet = setOf(*fillerWords)
 
@@ -105,6 +104,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     }
     return result
 }
+
 /**
  * Простая (2 балла)
  *
@@ -124,6 +124,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
     }
     return true
 }
+
 /**
  * Простая (2 балла)
  *
@@ -159,8 +160,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
     val aa = a.toSet()
     val bb = b.toSet()
     val result = mutableListOf<String>()
-    for (element in bb){
-        if (element in aa){
+    for (element in bb) {
+        if (element in aa) {
             result.add(element)
         }
     }
@@ -187,16 +188,15 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val result = mapA.toMutableMap()
     for ((key, value) in mapB) {
-        if (key == "" && !result.containsKey("")) result += Pair(key, "")
-        if (value == "") result[key] = result[key] + ", " + value
-        if (!result.containsKey(key)) result += Pair(key, "")
-        if (!result.containsValue(value)) result[key] = result[key] + ", " + value
+        result.merge(key, value) { first, second ->
+            if (first == second) {
+                first
+            } else {
+                "$first, $second"
+            }
+        }
     }
-    for ((key, value) in result) {
-        if (value.first() == ',') result[key] = value.drop(2)
-    }
-    return if (mapA.isEmpty() && mapB.isEmpty()) emptyMap()
-    else result
+    return result
 }
 
 /**
@@ -271,7 +271,7 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     for (element in word) {
         charsinword.add(element)
     }
-    for (element in charsinword){
+    for (element in charsinword) {
         if (!chars.contains(element)) flag = 0
     }
     return if (word.isEmpty()) true
@@ -355,7 +355,10 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "GoodGnome" to setOf()
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    TODO()
+}
+
 /**
  * Сложная (6 баллов)
  *
@@ -408,4 +411,6 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    TODO()
+}

@@ -6,6 +6,7 @@ import lesson2.task2.daysInMonth
 import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.lang.NumberFormatException
+import java.lang.StringBuilder
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -152,7 +153,16 @@ fun dateDigitToStr(digital: String): String {
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    if (Regex("""^(\+?\d+) *-*(\([\d -]*\d+[\d -]*\))?[- \d]*${'$'}""").find(phone) != null) {
+        val num = phone.split(" ", "-", "(", ")")
+        val builder = StringBuilder()
+        for (element in num) {
+            builder.append(element)
+        }
+        return builder.toString()
+    } else return ""
+}
 
 /**
  * Средняя (5 баллов)
@@ -246,7 +256,6 @@ fun firstDuplicateIndex(str: String): Int {
 }
 
 
-
 /**
  * Сложная (6 баллов)
  *
@@ -290,7 +299,34 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    if (Regex("""[IVXDMLC]+""").find(roman) == null) return -1
+    val numbers = mutableMapOf(
+        "I" to 1,
+        "V" to 5,
+        "X" to 10,
+        "L" to 50,
+        "D" to 500,
+        "C" to 100,
+        "M" to 1000
+    )
+    val arrayOfStrNum = roman.split("").filter { it != "" }
+    val listOfNum = mutableListOf<Int>()
+    for (element in arrayOfStrNum) {
+        listOfNum.add(numbers[element]!!)
+    }
+    val result = mutableListOf<Int>()
+    for (i in listOfNum.indices) {
+        if (i != 0 && listOfNum[i - 1] < listOfNum[i]) {
+            result.removeLast()
+            result.add(listOfNum[i] - listOfNum[i-1])
+        }
+        else {
+            result.add(listOfNum[i])
+        }
+    }
+    return result.sum()
+}
 
 /**
  * Очень сложная (7 баллов)

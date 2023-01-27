@@ -2,13 +2,11 @@
 
 package lesson4.task1
 
-import kotlinx.html.I
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import lesson3.task1.digitNumber
 import lesson3.task1.isPrime
-import lesson3.task1.revert
-import kotlin.math.roundToInt
+import java.lang.StringBuilder
 import kotlin.math.sqrt
 
 // Урок 4: списки
@@ -180,6 +178,7 @@ fun times(a: List<Int>, b: List<Int>): Int {
     }
     return c
 }
+
 /**
  * Средняя (3 балла)
  *
@@ -232,8 +231,7 @@ fun factorize(n: Int): List<Int> {
         if (number % del == 0) {
             result.add(del)
             number /= del
-        }
-        else {
+        } else {
             if (del == 2) del = 3
             else del += 2
         }
@@ -346,39 +344,28 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
+fun getReplacement(digit: Int, letter1: String, letter2: String, letter3: String): String {
+    val result = StringBuilder()
+    when (digit) {
+        in 1..3 -> result.append(letter1.repeat(digit % 10))
+        4 -> result.append(letter1).append(letter2)
+        5 -> result.append(letter2)
+        in 6..8 -> result.append(letter2).append(letter1.repeat(digit % 10 - 5))
+        9 -> result.append(letter1).append(letter3)
+    }
+    return result.toString()
+}
+
 fun roman(n: Int): String {
     val list = convert(n, 10).reversed()
-    var result = mutableListOf<String>()
+    val result = mutableListOf<String>()
     for (i in list.indices) {
         when (i) {
-            0 -> when (list[i]) {
-                in 1..3 -> result += "I".repeat(list[i] % 10)
-                4 -> result += "IV"
-                5 -> result += "V"
-                in 6..8 -> result += "V" + "I".repeat(list[i] % 10 - 5)
-                9 -> result += "IX"
-
-            }
-
-            1 -> when (list[i]) {
-                in 1..3 -> result += "X".repeat(list[i] % 10)
-                4 -> result += "XL"
-                5 -> result += "L"
-                in 6..8 -> result += "L" + "X".repeat(list[i] % 10 - 5)
-                9 -> result += "XC"
-            }
-
-            2 -> when (list[i]) {
-                in 1..3 -> result += "C".repeat(list[i] % 10)
-                4 -> result += "CD"
-                5 -> result += "D"
-                in 6..8 -> result += "D" + "C".repeat(list[i] % 10 - 5)
-                9 -> result += "CM"
-            }
-
+            0 -> result += getReplacement(list[i], "I", "V", "X")
+            1 -> result += getReplacement(list[i], "X", "L", "C")
+            2 -> result += getReplacement(list[i], "C", "D", "M")
             3 -> result += "M".repeat(list[i] % 10)
         }
-        if (list[i] == 0) result = result
     }
     return result.reversed().joinToString(separator = "")
 }
@@ -399,14 +386,14 @@ fun russian(n: Int): String {
         "восемьсот", "девятьсот", "одна", "две", "тысяча", "тысячи", "тысяч"
     )
     var number = n
-    var list = mutableListOf<String>()
+    val list = mutableListOf<String>()
     var count = digitNumber(number) - 1
     var flag3 = 0
     var flag1 = 0
     while (number > 0) {
         val x = number / Math.pow(10.0, count.toDouble()).toInt()
         when {
-            x == 0 -> list = list
+            x == 0 -> {}
             count == 5 -> {
                 list.add(numbers[26 + x])
                 if (number / 1000 % 100 == 0) {
