@@ -684,31 +684,6 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    val res = lhv / rhv
-    val resDiv = lhv % rhv
-    val lineLen = 4 + digitNumber(lhv)
-    val writer = File(outputName).bufferedWriter()
-    val numbersRes = res.toString().split("").filter { it != "" }
-    val numbersLhv = lhv.toString().split("").filter { it != "" }
-    var currNumber = 0
-    writer.use {
-        writer.write(" " + lhv + " " + "|" + " " + rhv)
-        writer.newLine()
-        var count = 0
-        for (i in numbersRes.indices) {
-            if (i == 0) {
-                writer.write(
-                    "-" + numbersRes[i].toInt() * rhv +
-                            " ".repeat(lineLen - digitNumber(numbersRes[i].toInt() * rhv) - 1) + res
-                )
-                writer.newLine()
-                writer.write("-".repeat(1 + digitNumber(numbersRes[i].toInt() * rhv)))
-                writer.newLine()
-            } else if (i == 1) {
-
-            }
-        }
-    }
     TODO()
 }
 
