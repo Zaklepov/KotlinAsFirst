@@ -242,7 +242,6 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     if (str.isEmpty()) return -1
-    if (Regex("""^([а-яёА-ЯЁa-zA-Z]+ )*([а-яёА-ЯЁa-zA-Z]+)$""").find(str) == null) return -1
     val words = str.split(" ").filter { it != "" && it != " " }
     var prevelement = ""
     var counter = 0
@@ -300,7 +299,7 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    if (Regex("""[IVXDMLC]+""").find(roman) == null) return -1
+    if (Regex("""^[IVXDMLC]+$""").find(roman) == null) return -1
     val numbers = mutableMapOf(
         "I" to 1,
         "V" to 5,

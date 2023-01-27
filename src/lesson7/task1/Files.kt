@@ -334,26 +334,22 @@ fun top20Words(inputName: String): Map<String, Int> {
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 
-fun upperFirstValueChar(str: String): String {
-    val build = StringBuilder()
-    for (i in str.toCharArray().indices) {
-        if (i == 0) build.append(str[i].uppercase())
-        else build.append(str[i].lowercase())
-    }
-    return build.toString()
-}
 
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    val writer = File(outputName).bufferedWriter()
-    var text = File(inputName).readText()
-    for ((element, value) in dictionary) {
-        if (Regex("""[а-яёa-z]""").find(element.lowercase()) != null) {
-            text = text.replace(element.uppercase(), upperFirstValueChar(value))
-        }
-        text = text.replace(element.lowercase(), value.lowercase())
+    val lowerCaseMap= mutableMapOf<Char, String>()
+    for ((key, value) in dictionary){
+        lowerCaseMap.put(key.lowercaseChar(), value.lowercase())
     }
+    val writer = File(outputName).bufferedWriter()
+    val text = File(inputName).readText()
     writer.use {
-        writer.append(text)
+        for (element in text) {
+            if (lowerCaseMap.contains(element.lowercaseChar())) {
+                if (element.isUpperCase())
+                    writer.write(lowerCaseMap[element.lowercaseChar()]!!.replaceFirstChar { it.uppercase() })
+                else writer.write(lowerCaseMap[element.lowercaseChar()]!!)
+            } else writer.write(element.toString())
+        }
     }
 }
 
@@ -470,9 +466,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             if (!line.isEmpty()) {
                 var currline = line
                     .replace(Regex("""~~([^~]+)~~"""), "<s>$1</s>")
-                    .replace(Regex("""\*\*\*([^\*]+)\*\*\*"""), "<b><i>$1</i></b>")
-                    .replace(Regex("""\*\*([^\*]+)\*\*"""), "<b>$1</b>")
-                    .replace(Regex("""\*([^\*]+)\*"""), "<i>$1</i>")
+                    .replace(Regex("""\*\*\*(.+)\*\*\*"""), "<b><i>$1</i></b>")
+                    .replace(Regex("""\*\*(.+)\*\*"""), "<b>$1</b>")
+                    .replace(Regex("""\*(.+)\*"""), "<i>$1</i>")
 
                 writer.write(currline)
                 writer.newLine()

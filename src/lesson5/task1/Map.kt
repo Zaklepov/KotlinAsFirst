@@ -386,7 +386,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
             result2 = number - list[key]
         }
     }
-    return if (result1 != -1 && result2 != -1 && result2 != result1) Pair(list.indexOf(result2), list.indexOf(result1))
+    return if (result1 != -1 && result2 != -1 && list.indexOf(result2) != list.indexOf(result1))
+        Pair(list.indexOf(result2), list.indexOf(result1))
     else Pair(-1, -1)
 }
 
