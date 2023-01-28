@@ -272,7 +272,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     var sortedResult = result.toList().sortedByDescending { (k, v) -> v }.toMap()
     var counter = 0
     var minValue = 0
-    if (sortedResult.size > 19) {
+    if (sortedResult.size > 20) {
         for ((element, value) in sortedResult) {
             if (counter == 20) {
                 minValue = value
@@ -444,21 +444,23 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
+    var text = File(inputName).readText()
+    text = text
+        .trim()
+        .replace(Regex("""~~([^~]*)~~"""), "<s>$1</s>")
+        .replace(Regex("""\*\*\*([^*]*)\*\*\*"""), "<b><i>$1</i></b>")
+        .replace(Regex("""\*\*([^*]*)\*\*"""), "<b>$1</b>")
+        .replace(Regex("""\*([^*]*)\*"""), "<i>$1</i>")
+        .replace(Regex("""\n{2,}"""), "\n\n")
     writer.use {
         writer.write("<html>")
         writer.newLine()
         writer.write("<body>")
         writer.newLine()
         writer.write("<p>")
-        for (line in File(inputName).readLines()) {
+        for (line in text.lines()) {
             if (!line.isEmpty()) {
-                var currline = line
-                    .replace(Regex("""~~([^~]*)~~"""), "<s>$1</s>")
-                    .replace(Regex("""\*\*\*([^*]*)\*\*\*"""), "<b><i>$1</i></b>")
-                    .replace(Regex("""\*\*([^*]*)\*\*"""), "<b>$1</b>")
-                    .replace(Regex("""\*([^*]*)\*"""), "<i>$1</i>")
-
-                writer.write(currline)
+                writer.write(line)
                 writer.newLine()
             } else {
                 writer.write("</p>")
