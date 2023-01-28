@@ -4,6 +4,7 @@ package lesson7.task1
 
 import lesson3.task1.digitNumber
 import java.io.File
+import java.lang.Math.max
 import java.lang.Math.pow
 import java.lang.StringBuilder
 import java.util.regex.Pattern
@@ -159,15 +160,20 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    var midLen = 0
+    var maxLen = 0
     for (line in File(inputName).readLines()) {
-        if (line.trim().length / 2 > midLen) midLen = line.trim().length / 2
+        if (line.trim().length > maxLen) maxLen = line.trim().length
     }
-
+    val midlen = maxLen / 2
     writer.use {
         for (line in File(inputName).readLines()) {
-            writer.write(" ".repeat(midLen - line.trim().length / 2) + line.trim())
-            writer.newLine()
+            if (maxLen % 2 == line.trim().length % 2) {
+                writer.write(" ".repeat(midlen - line.trim().length / 2) + line.trim())
+                writer.newLine()
+            } else {
+                writer.write(" ".repeat(midlen - line.trim().length / 2) + line.trim())
+                writer.newLine()
+            }
         }
     }
 }
