@@ -7,6 +7,7 @@ import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.lang.NumberFormatException
 import java.lang.StringBuilder
+import java.util.*
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -267,24 +268,20 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    if (Regex("""^(\D+ \d+(\.\d+)?; )*(\D+ \d+(\.\d+)?)$""").find(description) == null)
-        return ""
-    val desc = description.split(";", " ").filter { it != " " && it != "" }
-    var res = Pair("", 0.0)
-    for (i in desc.indices) {
-        if (Regex("""^(\d+\.\d+)$""").find(desc[i]) != null) {
-            val desci = desc[i].split(".").filter { it != "" && it != " " }
-            val num =
-                desci.first().toDouble() + desci.last().toDouble() / Math.pow(10.0, desci.last().length.toDouble())
-            if (res.second <= num) {
-                res = Pair(desc[i - 1], num)
+    if (Regex("""^([^ ]+ \d+(\.\d+)?; )*[^ ]+ \d+(\.\d+)?$""").find(description) == null) return ""
+    else {
+        val goods = description
+            .replace(";", "")
+            .split(" ")
+        val mapOfGoods = mutableMapOf<Double, String>()
+        for (i in goods.indices) {
+            if (i % 2 == 0) {
+                mapOfGoods.put(goods[i + 1].toDouble(), goods[i])
             }
         }
-        if (Regex("""^(\d+)$""").find(desc[i]) != null && res.second <= desc[i].toDouble()) {
-            res = Pair(desc[i - 1], desc[i].toDouble())
-        }
+        val maxRes = Collections.max(mapOfGoods.keys)
+        return mapOfGoods[maxRes]!!
     }
-    return res.first
 }
 
 /**

@@ -159,27 +159,15 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val lines = mutableListOf<String>()
+    var midLen = 0
     for (line in File(inputName).readLines()) {
-        lines.add(line.trim())
+        if (line.trim().length / 2 > midLen) midLen = line.trim().length / 2
     }
-    var maxLen = 0
-    for (line in lines) {
-        if (line.length > maxLen) maxLen = line.length
-    }
-    val midLen = maxLen / 2
+
     writer.use {
-        for (line in lines) {
-            if (midLen != line.length / 2 && line.length % 2 == 0) {
-                writer.write(" ".repeat(midLen - line.length / 2) + line)
-                writer.newLine()
-            } else if (midLen != line.length / 2 && line.length % 2 != 0) {
-                writer.write(" ".repeat(midLen - (line.length) / 2) + line)
-                writer.newLine()
-            } else {
-                writer.write(line)
-                writer.newLine()
-            }
+        for (line in File(inputName).readLines()) {
+            writer.write(" ".repeat(midLen - line.trim().length / 2) + line.trim())
+            writer.newLine()
         }
     }
 }
@@ -284,7 +272,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     var sortedResult = result.toList().sortedByDescending { (k, v) -> v }.toMap()
     var counter = 0
     var minValue = 0
-    if (sortedResult.size > 20) {
+    if (sortedResult.size > 19) {
         for ((element, value) in sortedResult) {
             if (counter == 20) {
                 minValue = value
@@ -336,8 +324,8 @@ fun top20Words(inputName: String): Map<String, Int> {
 
 
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    val lowerCaseMap= mutableMapOf<Char, String>()
-    for ((key, value) in dictionary){
+    val lowerCaseMap = mutableMapOf<Char, String>()
+    for ((key, value) in dictionary) {
         lowerCaseMap.put(key.lowercaseChar(), value.lowercase())
     }
     val writer = File(outputName).bufferedWriter()
@@ -465,10 +453,10 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         for (line in File(inputName).readLines()) {
             if (!line.isEmpty()) {
                 var currline = line
-                    .replace(Regex("""~~([^~]+)~~"""), "<s>$1</s>")
-                    .replace(Regex("""\*\*\*(.+)\*\*\*"""), "<b><i>$1</i></b>")
-                    .replace(Regex("""\*\*(.+)\*\*"""), "<b>$1</b>")
-                    .replace(Regex("""\*(.+)\*"""), "<i>$1</i>")
+                    .replace(Regex("""~~([^~]*)~~"""), "<s>$1</s>")
+                    .replace(Regex("""\*\*\*([^*]*)\*\*\*"""), "<b><i>$1</i></b>")
+                    .replace(Regex("""\*\*([^*]*)\*\*"""), "<b>$1</b>")
+                    .replace(Regex("""\*([^*]*)\*"""), "<i>$1</i>")
 
                 writer.write(currline)
                 writer.newLine()
