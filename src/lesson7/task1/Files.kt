@@ -444,7 +444,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val text = File(inputName).readText().trim('\r', '\n')
+    val text = File(inputName).readText().trim()
         .replace(Regex("""\n[^\n\S]+"""), "\n")
         .replace(Regex("""\n{2,}"""), "\n\n")
     val mdTagsStack = Stack<String>()
