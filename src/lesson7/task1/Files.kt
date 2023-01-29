@@ -465,8 +465,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 if (mdTagsStack.isNotEmpty() && (mdTagsStack.peek() == mdTag)) {
                     mdTagsStack.pop()
                     htmlTag = closeTags.get(mdTag)!!
-                }
-                else {
+                } else {
                     mdTagsStack.push(mdTag)
                     htmlTag = openTags.get(mdTag)!!
                 }
@@ -478,8 +477,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     mdTagsStack.pop()
                     builder.append(closeTags.get(mdTag))
                     mdTag = "*"
-                }
-                else mdTag += element
+                } else mdTag += element
             } else {
                 builder.append(element)
             }
@@ -490,7 +488,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             if (!line.isEmpty()) {
                 writer.write(line)
                 writer.newLine()
-            } else {
+            } else if (line.isEmpty() || Regex("""^ +$""").find(line) != null){
                 writer.write("</p>")
                 writer.newLine()
                 writer.write("<p>")
