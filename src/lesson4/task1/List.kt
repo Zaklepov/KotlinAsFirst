@@ -378,80 +378,79 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    var numbers1 = arrayOf( "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
-    var numbers10 = arrayOf("десять",
+    val numbers1 = arrayOf( "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val numbers10 = arrayOf("десять",
         "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать",
         "восемнадцать", "девятнадцать")
-    var numbers11 = arrayOf("двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят",
+    val numbers11 = arrayOf("двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят",
         "восемьдесят", "девяносто")
     val numbers100 = arrayOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот",
         "восемьсот", "девятьсот")
-    val numbers1000 = arrayOf("одна", "две", "тысяча", "тысячи")
     var number = n
     val list = mutableListOf<String>()
-    var count = digitNumber(number) - 1
-    var flag3 = 0
-    var flag1 = 0
+    var numberDigit = digitNumber(number) - 1
+    var is5DigitEquals1 = false
+    var id2DigitEquals1 = false
     while (number > 0) {
-        val x = number / Math.pow(10.0, count.toDouble()).toInt()
+        val x = number / Math.pow(10.0, numberDigit.toDouble()).toInt()
         when {
             x == 0 -> {}
-            count == 5 -> {
+            numberDigit == 5 -> {
                 list.add(numbers100[x - 1])
                 if (number / 1000 % 100 == 0) {
-                    list.add("тысяч")// сотни тысяч
+                    list.add("тысяч")
                 }
             }
 
-            count == 4 && x == 1 -> {
-                list.add(numbers10[number / Math.pow(10.0, count - 1.toDouble()).toInt() % 10])
+            numberDigit == 4 && x == 1 -> {
+                list.add(numbers10[number / Math.pow(10.0, numberDigit - 1.toDouble()).toInt() % 10])
                 list.add("тысяч")
-                flag3 = 1
+                is5DigitEquals1 = true
             }
 
-            count == 4 && x != 1 -> {
+            numberDigit == 4 && x != 1 -> {
                 list.add(numbers11[x - 2])
                 if (number / 1000 % 10 == 0) {
                     list.add("тысяч")
                 }
             }
 
-            count == 3 && x == 0 -> list.add("тысяч")
-            count == 3 && flag3 == 0 && x == 1 -> {
+            numberDigit == 3 && x == 0 -> list.add("тысяч")
+            numberDigit == 3 && is5DigitEquals1 == false && x == 1 -> {
                 list.add("одна")
                 list.add("тысяча")
             }
 
-            count == 3 && flag3 == 0 && x == 2 -> {
+            numberDigit == 3 && is5DigitEquals1 == false && x == 2 -> {
                 list.add("две")
                 list.add("тысячи")
             }
 
-            count == 3 && flag3 == 0 && x in 3..4 -> {
+            numberDigit == 3 && is5DigitEquals1 == false && x in 3..4 -> {
                 list.add(numbers1[x - 1])
                 list.add("тысячи")
             }
 
-            count == 3 && flag3 == 0 && x in 5..9 -> {
+            numberDigit == 3 && is5DigitEquals1 == false && x in 5..9 -> {
                 list.add(numbers1[x - 1])
                 list.add("тысяч")
             }
 
-            count == 3 && flag3 == 0 && x == 0 -> {
+            numberDigit == 3 && is5DigitEquals1 == false && x == 0 -> {
                 list.add("тысяч")
             }
 
-            count == 2 -> list.add(numbers100[x - 1])
-            count == 1 && x != 1 -> list.add(numbers11[x - 2])
-            count == 1 && x == 1 -> {
-                list.add(numbers10[number / Math.pow(10.0, count - 1.toDouble()).toInt() % 10])
-                flag1 = 1
+            numberDigit == 2 -> list.add(numbers100[x - 1])
+            numberDigit == 1 && x != 1 -> list.add(numbers11[x - 2])
+            numberDigit == 1 && x == 1 -> {
+                list.add(numbers10[number / Math.pow(10.0, numberDigit - 1.toDouble()).toInt() % 10])
+                id2DigitEquals1 = true
             }
 
-            count == 0 && flag1 == 0 -> list.add(numbers1[x - 1])
+            numberDigit == 0 && id2DigitEquals1 == false -> list.add(numbers1[x - 1])
         }
-        count -= 1
-        number %= Math.pow(10.0, count + 1.toDouble()).toInt()
+        numberDigit -= 1
+        number %= Math.pow(10.0, numberDigit + 1.toDouble()).toInt()
     }
     return list.joinToString(" ")
 }

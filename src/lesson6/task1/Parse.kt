@@ -4,8 +4,6 @@ package lesson6.task1
 
 import lesson2.task2.daysInMonth
 import java.lang.IllegalArgumentException
-import java.lang.NullPointerException
-import java.lang.NumberFormatException
 import java.lang.StringBuilder
 import java.util.*
 
@@ -82,7 +80,7 @@ fun main() {
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    val month = mutableMapOf<String, String>(
+    val month = mutableMapOf(
         "января" to "01",
         "февраля" to "02",
         "марта" to "03",
@@ -116,7 +114,7 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    val month = mutableMapOf<String, String>(
+    val month = mutableMapOf(
         "01" to "января",
         "02" to "февраля",
         "03" to "марта",
@@ -276,7 +274,7 @@ fun mostExpensive(description: String): String {
         val mapOfGoods = mutableMapOf<Double, String>()
         for (i in goods.indices) {
             if (i % 2 == 0) {
-                mapOfGoods.put(goods[i + 1].toDouble(), goods[i])
+                mapOfGoods[goods[i + 1].toDouble()] = goods[i]
             }
         }
         val maxRes = Collections.max(mapOfGoods.keys)

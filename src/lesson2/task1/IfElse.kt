@@ -4,9 +4,7 @@ package lesson2.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
-import kotlin.math.abs
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.sqrt
 
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
@@ -115,7 +113,7 @@ fun whichRookThreatens(
 ): Int = when {
     rookX1 != kingX && rookX2 != kingX && rookY1 != kingY && rookY2 != kingY -> 0
     (rookX2 == kingX || rookY2 == kingY) && rookX1 != kingX && rookY1 != kingY -> 2
-    (rookX1 == kingX || rookY1 == kingY) && rookX2 != kingX && rookY2 != kingY -> 1
+    rookX2 != kingX && rookY2 != kingY -> 1
     else -> 3
 }
 
@@ -178,7 +176,7 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
         c > b || a > d -> -1
         c < a && b < d -> b - a
         a < c && d < b -> d - c
-        c <= a && d <= b && d >= a -> d - a
+        c <= a && d <= b -> d - a
         else -> b - c
     }
 }

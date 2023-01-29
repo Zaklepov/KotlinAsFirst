@@ -215,7 +215,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     writer.use {
         for (wordsList in splittedLines) {
             if (wordsList.size == 1) {
-                writer.write(wordsList.get(0))
+                writer.write(wordsList[0])
                 writer.newLine()
                 continue
             }
@@ -224,12 +224,12 @@ fun alignFileByWidth(inputName: String, outputName: String) {
             for (word in wordsList) {
                 lineLength += word.length
             }
-            var spaces = maxSize - lineLength
+            val spaces = maxSize - lineLength
             var counter = spaces % (wordsList.size - 1)
             for (i in wordsList.indices) {
                 if (i == wordsList.lastIndex) writer.write(wordsList[i])
                 else if (counter <= 0) writer.write(wordsList[i] + " ".repeat(spaces / (wordsList.size - 1)))
-                else if (counter > 0) writer.write(wordsList[i] + " ".repeat(spaces / (wordsList.size - 1) + 1))
+                else writer.write(wordsList[i] + " ".repeat(spaces / (wordsList.size - 1) + 1))
                 counter--
             }
 
@@ -326,7 +326,7 @@ fun top20Words(inputName: String): Map<String, Int> {
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     val lowerCaseMap = mutableMapOf<Char, String>()
     for ((key, value) in dictionary) {
-        lowerCaseMap.put(key.lowercaseChar(), value.lowercase())
+        lowerCaseMap[key.lowercaseChar()] = value.lowercase()
     }
     val writer = File(outputName).bufferedWriter()
     val text = File(inputName).readText()
@@ -384,7 +384,7 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
             .size
         if (maxlen == line.length && maxlen == setofchar) {
             if (File(outputName).length().toInt() == 0) {
-                if (flag == true) {
+                if (flag) {
                     writer.write(", ")
                     writer.write(line)
                 } else {
@@ -444,11 +444,11 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    var text = File(inputName).readText()
+    val text = File(inputName).readText()
         .trim()
         .replace(Regex("""\n[^\n\S]+"""), "\n")
         .replace(Regex("""\n{2,}"""), "\n\n")
-    var mdTagsStack = Stack<String>()
+    val mdTagsStack = Stack<String>()
     writer.use {
         writer.write("<html>")
         writer.newLine()
@@ -463,13 +463,12 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             var mdTag = ""
             for (element in text) {
                 if (mdTag.isNotEmpty() && !mdTag.startsWith(element)) {
-                    var htmlTag: String
-                    if (mdTagsStack.isNotEmpty() && (mdTagsStack.peek() == mdTag)) {
+                    val htmlTag: String = if (mdTagsStack.isNotEmpty() && (mdTagsStack.peek() == mdTag)) {
                         mdTagsStack.pop()
-                        htmlTag = closeTags.get(mdTag)!!
+                        closeTags[mdTag]!!
                     } else {
                         mdTagsStack.push(mdTag)
-                        htmlTag = openTags.get(mdTag)!!
+                        openTags[mdTag]!!
                     }
                     builder.append(htmlTag)
                     mdTag = ""
@@ -477,7 +476,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 if (element == '*' || element == '~') {
                     if (mdTag == "**" && element == '*') {
                         mdTagsStack.pop()
-                        builder.append(closeTags.get(mdTag))
+                        builder.append(closeTags[mdTag])
                         mdTag = "*"
                     } else mdTag += element
                 } else {
@@ -487,7 +486,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
             val result = builder.toString()
             for (line in result.lines()) {
-                if (!line.isEmpty()) {
+                if (line.isNotEmpty()) {
                     writer.write(line)
                     writer.newLine()
                 } else if (line.isEmpty()) {
@@ -666,16 +665,16 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
         writer.newLine()
         var count = 0
         while (num > 0) {
-            if (count == 0) {
+            num /= if (count == 0) {
                 writer.write(" ".repeat(maxLen - digitNumber(lhv * (num % 10))) + lhv * (num % 10))
                 writer.newLine()
                 count++
-                num /= 10
+                10
             } else {
                 writer.write("+" + " ".repeat(maxLen - count - digitNumber(lhv * (num % 10)) - 1) + lhv * (num % 10))
                 writer.newLine()
                 count++
-                num /= 10
+                10
             }
         }
         writer.write("-".repeat(maxLen))

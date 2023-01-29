@@ -239,7 +239,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var factorial = 2
-    var xx = x % (2 * PI)
+    val xx = x % (2 * PI)
     var l = xx
     var sinx = xx
     while (abs(l) > eps) {
@@ -263,7 +263,7 @@ fun sin(x: Double, eps: Double): Double {
 fun cos(x: Double, eps: Double): Double {
     var cosx = 1.0
     var factorial = 2
-    var xx = x % (2 * PI)
+    val xx = x % (2 * PI)
     var l = 1.0
     while (abs(l) >= eps) {
         l = l * sqr(xx) / (factorial * (factorial - 1)) * -1
