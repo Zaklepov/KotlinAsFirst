@@ -446,6 +446,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var text = File(inputName).readText()
         .trim()
+        .replace (Regex("""\n +"""), "\n")
         .replace(Regex("""\n{2,}"""), "\n\n")
     var mdTagsStack = Stack<String>()
     writer.use {
@@ -488,7 +489,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             if (!line.isEmpty()) {
                 writer.write(line)
                 writer.newLine()
-            } else if (line.isEmpty() || Regex("""^ +$""").find(line) != null){
+            } else if (line.isEmpty()){
                 writer.write("</p>")
                 writer.newLine()
                 writer.write("<p>")
