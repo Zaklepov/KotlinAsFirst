@@ -164,19 +164,14 @@ fun centerFile(inputName: String, outputName: String) {
     for (line in File(inputName).readLines()) {
         if (line.trim().length > maxLen) maxLen = line.trim().length
     }
-    val midlen = maxLen / 2
     writer.use {
         for (line in File(inputName).readLines()) {
-            if (maxLen % 2 == line.trim().length % 2) {
-                writer.write(" ".repeat(midlen - line.trim().length / 2) + line.trim())
-                writer.newLine()
-            } else {
-                writer.write(" ".repeat(midlen - line.trim().length / 2) + line.trim())
-                writer.newLine()
-            }
+            writer.write(" ".repeat((maxLen - line.trim().length) / 2) + line.trim())
+            writer.newLine()
         }
     }
 }
+
 
 /**
  * Сложная (20 баллов)
@@ -453,10 +448,10 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var text = File(inputName).readText()
     text = text
         .trim()
-        .replace(Regex("""~~([^~]*)~~"""), "<s>$1</s>")
-        .replace(Regex("""\*\*\*([^*]*)\*\*\*"""), "<b><i>$1</i></b>")
-        .replace(Regex("""\*\*([^*]*)\*\*"""), "<b>$1</b>")
-        .replace(Regex("""\*([^*]*)\*"""), "<i>$1</i>")
+        .replace(Regex("""~~([^~]+)~~"""), "<s>$1</s>")
+        .replace(Regex("""\*\*\*([^*]+)\*\*\*"""), "<b><i>$1</i></b>")
+        .replace(Regex("""\*\*([^*]+)\*\*"""), "<b>$1</b>")
+        .replace(Regex("""\*([^*]+)\*"""), "<i>$1</i>")
         .replace(Regex("""\n{2,}"""), "\n\n")
     writer.use {
         writer.write("<html>")

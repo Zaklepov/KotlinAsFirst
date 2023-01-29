@@ -378,13 +378,15 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    val numbers = arrayOf(
-        "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять",
+    var numbers1 = arrayOf( "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    var numbers10 = arrayOf("десять",
         "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать",
-        "восемнадцать", "девятнадцать", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят",
-        "восемьдесят", "девяносто", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот",
-        "восемьсот", "девятьсот", "одна", "две", "тысяча", "тысячи", "тысяч"
-    )
+        "восемнадцать", "девятнадцать")
+    var numbers11 = arrayOf("двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят",
+        "восемьдесят", "девяносто")
+    val numbers100 = arrayOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот",
+        "восемьсот", "девятьсот")
+    val numbers1000 = arrayOf("одна", "две", "тысяча", "тысячи")
     var number = n
     val list = mutableListOf<String>()
     var count = digitNumber(number) - 1
@@ -395,61 +397,61 @@ fun russian(n: Int): String {
         when {
             x == 0 -> {}
             count == 5 -> {
-                list.add(numbers[26 + x])
+                list.add(numbers100[x - 1])
                 if (number / 1000 % 100 == 0) {
-                    list.add(numbers[40])
+                    list.add("тысяч")// сотни тысяч
                 }
             }
 
             count == 4 && x == 1 -> {
-                list.add(numbers[9 + number / Math.pow(10.0, count - 1.toDouble()).toInt() % 10])
-                list.add(numbers[40])
+                list.add(numbers10[number / Math.pow(10.0, count - 1.toDouble()).toInt() % 10])
+                list.add("тысяч")
                 flag3 = 1
             }
 
             count == 4 && x != 1 -> {
-                list.add(numbers[17 + x])
+                list.add(numbers11[x - 2])
                 if (number / 1000 % 10 == 0) {
-                    list.add(numbers[40])
+                    list.add("тысяч")
                 }
             }
 
-            count == 3 && x == 0 -> list.add(numbers[40])
+            count == 3 && x == 0 -> list.add("тысяч")
             count == 3 && flag3 == 0 && x == 1 -> {
-                list.add(numbers[36])
-                list.add(numbers[38])
+                list.add("одна")
+                list.add("тысяча")
             }
 
             count == 3 && flag3 == 0 && x == 2 -> {
-                list.add(numbers[37])
-                list.add(numbers[39])
+                list.add("две")
+                list.add("тысячи")
             }
 
             count == 3 && flag3 == 0 && x in 3..4 -> {
-                list.add(numbers[2 + x - 3])
-                list.add(numbers[39])
+                list.add(numbers1[x - 1])
+                list.add("тысячи")
             }
 
             count == 3 && flag3 == 0 && x in 5..9 -> {
-                list.add(numbers[4 + x - 5])
-                list.add(numbers[40])
+                list.add(numbers1[x - 1])
+                list.add("тысяч")
             }
 
             count == 3 && flag3 == 0 && x == 0 -> {
-                list.add(numbers[40])
+                list.add("тысяч")
             }
 
-            count == 2 -> list.add(numbers[26 + x])
-            count == 1 && x != 1 -> list.add(numbers[17 + x])
+            count == 2 -> list.add(numbers100[x - 1])
+            count == 1 && x != 1 -> list.add(numbers11[x - 2])
             count == 1 && x == 1 -> {
-                list.add(numbers[9 + number / Math.pow(10.0, count - 1.toDouble()).toInt() % 10])
+                list.add(numbers10[number / Math.pow(10.0, count - 1.toDouble()).toInt() % 10])
                 flag1 = 1
             }
 
-            count == 0 && flag1 == 0 -> list.add(numbers[-1 + x])
+            count == 0 && flag1 == 0 -> list.add(numbers1[x - 1])
         }
         count -= 1
-        number = number % Math.pow(10.0, count + 1.toDouble()).toInt()
+        number %= Math.pow(10.0, count + 1.toDouble()).toInt()
     }
     return list.joinToString(" ")
 }
