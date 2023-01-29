@@ -4,9 +4,8 @@ package lesson7.task1
 
 import lesson3.task1.digitNumber
 import java.io.File
-import java.lang.Math.max
-import java.lang.Math.pow
 import java.lang.StringBuilder
+import java.util.Stack
 import java.util.regex.Pattern
 
 
@@ -446,20 +445,48 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var text = File(inputName).readText()
-    text = text
         .trim()
-        .replace(Regex("""~~([^~]+)~~"""), "<s>$1</s>")
-        .replace(Regex("""\*\*\*([^*]+)\*\*\*"""), "<b><i>$1</i></b>")
-        .replace(Regex("""\*\*([^*]+)\*\*"""), "<b>$1</b>")
-        .replace(Regex("""\*([^*]+)\*"""), "<i>$1</i>")
         .replace(Regex("""\n{2,}"""), "\n\n")
+    var mdTagsStack = Stack<String>()
     writer.use {
         writer.write("<html>")
         writer.newLine()
         writer.write("<body>")
         writer.newLine()
         writer.write("<p>")
-        for (line in text.lines()) {
+        val builder = StringBuilder()
+        val openTags = mapOf("~~" to "<s>", "***" to "<b><i>", "**" to "<b>", "*" to "<i>")
+        val closeTags = mapOf("~~" to "</s>", "***" to "</i></b>", "**" to "</b>", "*" to "</i>")
+
+        var mdTag = ""
+        for (element in text) {
+            if (mdTag.isNotEmpty() && !mdTag.startsWith(element)) {
+                var htmlTag: String
+                if (mdTagsStack.isNotEmpty() && (mdTagsStack.peek() == mdTag)) {
+                    mdTagsStack.pop()
+                    htmlTag = closeTags.get(mdTag)!!
+                }
+                else {
+                    mdTagsStack.push(mdTag)
+                    htmlTag = openTags.get(mdTag)!!
+                }
+                builder.append(htmlTag)
+                mdTag = ""
+            }
+            if (element == '*' || element == '~') {
+                if (mdTag == "**" && element == '*') {
+                    mdTagsStack.pop()
+                    builder.append(closeTags.get(mdTag))
+                    mdTag = "*"
+                }
+                else mdTag += element
+            } else {
+                builder.append(element)
+            }
+        }
+
+        val result = builder.toString()
+        for (line in result.lines()) {
             if (!line.isEmpty()) {
                 writer.write(line)
                 writer.newLine()
