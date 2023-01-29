@@ -446,7 +446,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var text = File(inputName).readText()
         .trim()
-        .replace (Regex("""\n[^\n\S]+"""), "\n")
+        .replace(Regex("""\n[^\n\S]+"""), "\n")
         .replace(Regex("""\n{2,}"""), "\n\n")
     var mdTagsStack = Stack<String>()
     writer.use {
@@ -455,54 +455,63 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         writer.write("<body>")
         writer.newLine()
         writer.write("<p>")
-        val builder = StringBuilder()
-        val openTags = mapOf("~~" to "<s>", "***" to "<b><i>", "**" to "<b>", "*" to "<i>")
-        val closeTags = mapOf("~~" to "</s>", "***" to "</i></b>", "**" to "</b>", "*" to "</i>")
+        if (text.isNotEmpty()) {
+            val builder = StringBuilder()
+            val openTags = mapOf("~~" to "<s>", "***" to "<b><i>", "**" to "<b>", "*" to "<i>")
+            val closeTags = mapOf("~~" to "</s>", "***" to "</i></b>", "**" to "</b>", "*" to "</i>")
 
-        var mdTag = ""
-        for (element in text) {
-            if (mdTag.isNotEmpty() && !mdTag.startsWith(element)) {
-                var htmlTag: String
-                if (mdTagsStack.isNotEmpty() && (mdTagsStack.peek() == mdTag)) {
-                    mdTagsStack.pop()
-                    htmlTag = closeTags.get(mdTag)!!
-                } else {
-                    mdTagsStack.push(mdTag)
-                    htmlTag = openTags.get(mdTag)!!
+            var mdTag = ""
+            for (element in text) {
+                if (mdTag.isNotEmpty() && !mdTag.startsWith(element)) {
+                    var htmlTag: String
+                    if (mdTagsStack.isNotEmpty() && (mdTagsStack.peek() == mdTag)) {
+                        mdTagsStack.pop()
+                        htmlTag = closeTags.get(mdTag)!!
+                    } else {
+                        mdTagsStack.push(mdTag)
+                        htmlTag = openTags.get(mdTag)!!
+                    }
+                    builder.append(htmlTag)
+                    mdTag = ""
                 }
-                builder.append(htmlTag)
-                mdTag = ""
+                if (element == '*' || element == '~') {
+                    if (mdTag == "**" && element == '*') {
+                        mdTagsStack.pop()
+                        builder.append(closeTags.get(mdTag))
+                        mdTag = "*"
+                    } else mdTag += element
+                } else {
+                    builder.append(element)
+                }
             }
-            if (element == '*' || element == '~') {
-                if (mdTag == "**" && element == '*') {
-                    mdTagsStack.pop()
-                    builder.append(closeTags.get(mdTag))
-                    mdTag = "*"
-                } else mdTag += element
-            } else {
-                builder.append(element)
-            }
-        }
 
-        val result = builder.toString()
-        for (line in result.lines()) {
-            if (!line.isEmpty()) {
-                writer.write(line)
-                writer.newLine()
-            } else if (line.isEmpty()){
-                writer.write("</p>")
-                writer.newLine()
-                writer.write("<p>")
-                writer.newLine()
+            val result = builder.toString()
+            for (line in result.lines()) {
+                if (!line.isEmpty()) {
+                    writer.write(line)
+                    writer.newLine()
+                } else if (line.isEmpty()) {
+                    writer.write("</p>")
+                    writer.newLine()
+                    writer.write("<p>")
+                    writer.newLine()
+                }
             }
+            writer.write("</p>")
+            writer.newLine()
+            writer.write("</body>")
+            writer.newLine()
+            writer.write("</html>")
+        } else {
+            writer.write("</p>")
+            writer.newLine()
+            writer.write("</body>")
+            writer.newLine()
+            writer.write("</html>")
         }
-        writer.write("</p>")
-        writer.newLine()
-        writer.write("</body>")
-        writer.newLine()
-        writer.write("</html>")
     }
 }
+
 
 /**
  * Сложная (23 балла)
