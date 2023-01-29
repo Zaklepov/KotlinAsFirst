@@ -371,11 +371,11 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     var maxlen = 0
     var flag = false
     for (line in File(inputName).readLines()) {
-        val setofchar = line
+        val setOfChar = line
             .lowercase()
             .toSet()
             .size
-        if (line.length > maxlen && setofchar == line.length) maxlen = line.length
+        if (line.length > maxlen && setOfChar == line.length) maxlen = line.length
     }
     for (line in File(inputName).readLines()) {
         val setofchar = line
